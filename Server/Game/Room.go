@@ -1,13 +1,14 @@
 package Game
 
 type Room struct {
-	Name string
+	UID         string
+	Name        string
 	Description string
-	Exits map[Direction] *Room
-	Players map[string] *Player
+	Exits       map[Direction]string //UID of connecting room
+	Players     map[string]*Player
 }
 
-func (r Room) Enter (oldRoom *Room, player *Player) {
+func (r Room) Enter(oldRoom *Room, player *Player) {
 	if oldRoom != nil {
 		delete(oldRoom.Players, player.Name)
 	}
@@ -31,7 +32,6 @@ func (r Room) RemovePlayer(name string) {
 	if r.Players[name] == nil {
 		return
 	}
-	r.SendMessage(name  + " disappears in a puff of smoke")
+	r.SendMessage(name + " disappears in a puff of smoke")
 	delete(r.Players, name)
 }
-

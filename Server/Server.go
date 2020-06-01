@@ -15,6 +15,7 @@ var upgrader = websocket.Upgrader{}
 
 var t *template.Template
 var GMan Game.GameManager
+var Config Game.EngineConfig
 
 func logic(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
@@ -25,8 +26,8 @@ func logic(w http.ResponseWriter, r *http.Request) {
 	defer c.Close()
 	pName := login(c)
 	p := Game.Player{
-		Name:pName,
-		Connection:c,
+		Name:       pName,
+		Connection: c,
 	}
 	err = GMan.AddPlayer(pName, &p)
 	GMan.StartingRoom.Enter(nil, &p)
@@ -72,15 +73,12 @@ func main() {
 
 func ctor() {
 	GMan.Players = make(map[string]*Game.Player)
+	GMan.Rooms = make(map[string]Game.Room)
+	Game.InitialzeLua(&GMan)
 	//load config
+	Config = Game.LoadConfig()
 	//load rooms
-	//temp lobby room
-	r := Game.Room{
-		Name:"The Lobby",
-		Description:"an empty room",
-	}
-	r.Players = make(map[string]*Game.Player)
-	GMan.StartingRoom = r
+	Game.LoadRooms(Config.PathToRooms)
 	//start tick
 }
 

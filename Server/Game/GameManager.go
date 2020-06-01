@@ -3,12 +3,13 @@ package Game
 import "errors"
 
 type GameManager struct {
-	Players map[string] *Player
-	Updateables []Updateable
+	Players      map[string]*Player
+	Updateables  []Updateable
+	Rooms        map[string]Room
 	StartingRoom Room
 }
 
-func (g GameManager) Update()  {
+func (g GameManager) Update() {
 	for _, u := range g.Updateables {
 		u.Update()
 	}
@@ -29,4 +30,13 @@ func (g GameManager) RemovePlayer(name string) error {
 	g.Players[name].CurrentRoom.RemovePlayer(g.Players[name].Name)
 	delete(g.Players, name)
 	return nil
+}
+
+func (g GameManager) AddRoom(room Room) {
+	if room.UID == "Default" {
+		g.StartingRoom = room
+	}
+	g.Updateables = append(g.Updateables, room)
+	g.Rooms[room.UID] = room
+	g.Players = make(map[string]*Player)
 }
