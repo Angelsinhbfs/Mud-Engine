@@ -28,6 +28,7 @@ func logic(w http.ResponseWriter, r *http.Request) {
 	p := Game.Player{
 		Name:       pName,
 		Connection: c,
+		GMan:       &GMan,
 	}
 	err = GMan.AddPlayer(pName, &p)
 	GMan.StartingRoom.Enter(nil, &p)
@@ -73,7 +74,7 @@ func main() {
 
 func ctor() {
 	GMan.Players = make(map[string]*Game.Player)
-	GMan.Rooms = make(map[string]Game.Room)
+	GMan.Rooms = make(map[string]*Game.Room)
 	Game.InitialzeLua(&GMan)
 	//load config
 	Config = Game.LoadConfig()

@@ -5,10 +5,11 @@ package Game
 //http://www.lua.org/manual/5.2/manual.html#lua_call
 
 import (
+	"fmt"
 	"github.com/Shopify/go-lua"
+	"github.com/Shopify/goluago/util"
 	"io/ioutil"
 	"log"
-	"strings"
 )
 import "github.com/Shopify/goluago"
 
@@ -20,6 +21,7 @@ func InitialzeLua(manager *GameManager) {
 	gMan = manager
 	lua.OpenLibraries(l)
 	goluago.Open(l)
+	util.Open(l)
 	registerLuaFunctions()
 	if err := lua.DoFile(l, "Server/Game/LuaFiles/Definitions.lua"); err != nil {
 		log.Print("LUA:", err)
@@ -74,40 +76,36 @@ func LoadRooms(path string) {
 
 func loadRoom(path string, fName string) {
 	r := Room{}
+	r.Players = make(map[string]*Player)
+	fmt.Println("starting on room " + fName)
 	if err := lua.DoFile(l, path+"/"+fName); err != nil {
 		log.Print("LUA: room error:", err)
 		return
 	}
-	f := strings.Split(fName, ".")
-	if len(f) > 0 {
-		l.Global(f[0])
-		l.Table(-1)
-		r.UID = getStringField("UID")
-		r.Name = getStringField("Name")
-		r.Description = getStringField("Description")
-	}
-
-	gMan.AddRoom(r)
+	l.Global("UID")
+	l.Global("Name")
+	l.Global("Description")
+	r.UID, _ = l.ToString(-3)
+	r.Name, _ = l.ToString(-2)
+	r.Description, _ = l.ToString(-1)
+	l.Pop(3)
+	loadExits(&r)
+	gMan.AddRoom(&r)
 }
 
-func getStringField(key string) string {
-	l.PushString(key)
-	l.Table(-2)
-	if !l.IsString(-1) {
-		log.Print("LUA: get field error. " + key + " is not a string")
+func loadExits(r *Room) {
+	r.Exits = make(map[Direction]string)
+	l.Global("Exits")
+	l.Field(-1, "D")
+	l.Field(-2, "U")
+	l.Field(-3, "W")
+	l.Field(-4, "S")
+	l.Field(-5, "E")
+	l.Field(-6, "N")
+	for i := 0; i < 6; i++ {
+		if l.IsString(-1) {
+			r.Exits[Direction(i)], _ = l.ToString(-1)
+		}
+		l.Pop(1)
 	}
-	s, _ := l.ToString(-1)
-	l.Pop(1)
-	return s
-}
-
-func getNumberField(key string) float64 {
-	l.PushString(key)
-	l.Table(-2)
-	if !l.IsNumber(-1) {
-		log.Print("LUA: get field error. " + key + " is not a number")
-	}
-	s, _ := l.ToNumber(-1)
-	l.Pop(1)
-	return s
 }

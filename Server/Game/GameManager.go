@@ -5,17 +5,17 @@ import "errors"
 type GameManager struct {
 	Players      map[string]*Player
 	Updateables  []Updateable
-	Rooms        map[string]Room
-	StartingRoom Room
+	Rooms        map[string]*Room
+	StartingRoom *Room
 }
 
-func (g GameManager) Update() {
+func (g *GameManager) Update() {
 	for _, u := range g.Updateables {
 		u.Update()
 	}
 }
 
-func (g GameManager) AddPlayer(name string, player *Player) error {
+func (g *GameManager) AddPlayer(name string, player *Player) error {
 	if g.Players[name] != nil {
 		return errors.New("Player in use")
 	}
@@ -23,7 +23,7 @@ func (g GameManager) AddPlayer(name string, player *Player) error {
 	return nil
 }
 
-func (g GameManager) RemovePlayer(name string) error {
+func (g *GameManager) RemovePlayer(name string) error {
 	if g.Players[name] == nil {
 		return errors.New("Player not found")
 	}
@@ -32,7 +32,7 @@ func (g GameManager) RemovePlayer(name string) error {
 	return nil
 }
 
-func (g GameManager) AddRoom(room Room) {
+func (g *GameManager) AddRoom(room *Room) {
 	if room.UID == "Default" {
 		g.StartingRoom = room
 	}

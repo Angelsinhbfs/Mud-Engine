@@ -1,10 +1,8 @@
-
-Lobby = {
-    UID = "Default",
-    Name = "Lobby",
-    Description = "A big empty room with a ladder going Down",
-    Exits = {},
-    Items = {},
-    Enemies = {}
+UID = "Default"
+Name = "The Lobby"
+Description = "A big empty room with a ladder going Down"
+Exits = {
+    [Direction.Down] = "TestUID"
 }
-Lobby.Exits[Direction.Down] = "TestUID"
+Items = {}
+Enemies = {}
