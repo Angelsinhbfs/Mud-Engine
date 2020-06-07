@@ -1,11 +1,20 @@
 package Game
 
+import "log"
+
 type Room struct {
 	UID         string
 	Name        string
 	Description string
 	Exits       map[Direction]string //UID of connecting room
 	Players     map[string]*Player
+	Items       map[string]*Item
+}
+
+func (r *Room) New() {
+	r.Exits = make(map[Direction]string)
+	r.Players = make(map[string]*Player)
+	r.Items = make(map[string]*Item)
 }
 
 func (r *Room) Enter(oldRoom *Room, player *Player) {
@@ -25,7 +34,7 @@ func (r *Room) SendMessage(message string) {
 }
 
 func (r *Room) Update() {
-
+	log.Println("Tick " + r.Name + " updated")
 }
 
 func (r *Room) RemovePlayer(name string) {

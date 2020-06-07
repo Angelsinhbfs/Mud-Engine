@@ -39,11 +39,26 @@ func LoadConfig() EngineConfig {
 	}
 	c := EngineConfig{}
 	l.Global("PathToRooms")
+	l.Global("PathToEnemies")
+	l.Global("PathToItems")
+	l.Global("PathToNpcs")
 	l.Global("Port")
 	l.Global("TickRate")
 	e := false
-	if !l.IsString(-3) {
+	if !l.IsString(-6) {
 		log.Print("LUA: PathToRooms should be a string")
+		e = true
+	}
+	if !l.IsString(-5) {
+		log.Print("LUA: PathToEnemies should be a string")
+		e = true
+	}
+	if !l.IsString(-4) {
+		log.Print("LUA: PathToItems should be a string")
+		e = true
+	}
+	if !l.IsString(-3) {
+		log.Print("LUA: PathToNpcs should be a string")
 		e = true
 	}
 	if !l.IsNumber(-2) {
@@ -57,10 +72,14 @@ func LoadConfig() EngineConfig {
 	if e {
 		panic("Lua Config was not able to load correctly")
 	}
-	c.PathToRooms, _ = l.ToString(-3)
+	c.PathToRooms, _ = l.ToString(-6)
+	c.PathToEnemies, _ = l.ToString(-5)
+	c.PathToItems, _ = l.ToString(-4)
+	c.PathToNpcs, _ = l.ToString(-3)
 	c.Port, _ = l.ToInteger(-2)
-	c.TickRate, _ = l.ToNumber(-1)
-	l.Pop(3)
+	tr, _ := l.ToNumber(-1)
+	c.TickRate = int64(tr)
+	l.Pop(6)
 	return c
 }
 
@@ -76,7 +95,7 @@ func LoadRooms(path string) {
 
 func loadRoom(path string, fName string) {
 	r := Room{}
-	r.Players = make(map[string]*Player)
+	r.New()
 	fmt.Println("starting on room " + fName)
 	if err := lua.DoFile(l, path+"/"+fName); err != nil {
 		log.Print("LUA: room error:", err)
@@ -94,7 +113,6 @@ func loadRoom(path string, fName string) {
 }
 
 func loadExits(r *Room) {
-	r.Exits = make(map[Direction]string)
 	l.Global("Exits")
 	l.Field(-1, "D")
 	l.Field(-2, "U")

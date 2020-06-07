@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
@@ -35,7 +36,7 @@ func logic(w http.ResponseWriter, r *http.Request) {
 	GMan.StartingRoom.Enter(nil, &p)
 	if err != nil {
 		log.Println("Login:", err)
-		c.WriteMessage(websocket.TextMessage, []byte("Character name invalid. Closing connection"))
+		err = c.WriteMessage(websocket.TextMessage, []byte("Character name invalid. Closing connection"))
 	} else {
 		p.Logic()
 	}
@@ -82,6 +83,11 @@ func ctor() {
 	//load rooms
 	Game.LoadRooms(Config.PathToRooms)
 	//start tick
+	go func() {
+		for range time.Tick(time.Duration(Config.TickRate) * time.Second) {
+			GMan.Update()
+		}
+	}()
 }
 
 func serveTemplate(w http.ResponseWriter, r *http.Request) {

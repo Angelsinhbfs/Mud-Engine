@@ -12,6 +12,7 @@ type Player struct {
 	Connection  *websocket.Conn
 	CurrentRoom *Room
 	GMan        *GameManager
+	Equipment   Equipment
 }
 
 func (p *Player) Inspect() string {
@@ -35,72 +36,26 @@ func (p *Player) Logic() {
 		}
 		f := strings.Split(string(message), "::")
 		if len(f) > 0 {
-			var mDir Direction
 			switch strings.ToLower(f[0]) {
-			case "m":
-			case "move":
+			case "m", "move":
 				p.SendMessage("Which way are you going? [n]orth [e]ast [s]outh [w]est [u]p [d]own")
 				continue
-			case "n":
-				fallthrough
-			case "north":
-				mDir = North
-				break
-			case "e":
-				fallthrough
-			case "east":
-				mDir = East
-				break
-			case "s":
-				fallthrough
-			case "south":
-				mDir = South
-				break
-			case "w":
-				fallthrough
-			case "west":
-				mDir = West
-				break
-			case "u":
-				fallthrough
-			case "up":
-				mDir = Up
-				break
-			case "d":
-				fallthrough
-			case "down":
-				mDir = Down
-				break
+			case "n", "north", "e", "east", "s", "south", "w", "west", "u", "up", "d", "down":
+				p.Move(strings.ToLower(f[0]))
+				continue
 			case "l":
 				fallthrough
 			case "look":
 				p.SendMessage("d::" + p.CurrentRoom.Description)
 				continue
-			case "p":
-				fallthrough
-			case "pick up":
-				p.SendMessage("sys::Not yet implemented")
-				continue
+			case "p", "pick up", "i", "inventory", "eq", "equip", "uq", "unequip", "dr", "drop":
+				p.inventoryAction(f)
 			case "a":
 				fallthrough
 			case "attack":
 				p.SendMessage("sys::Not yet implemented")
 				continue
-			case "i":
-				fallthrough
-			case "inventory":
-				p.SendMessage("sys::Not yet implemented")
-				continue
-			case "eq":
-				fallthrough
-			case "equip":
-				p.SendMessage("sys::Not yet implemented")
-				continue
-			case "uq":
-				fallthrough
-			case "unequip":
-				p.SendMessage("sys::Not yet implemented")
-				continue
+
 			case "wh":
 				fallthrough
 			case "whisper":
@@ -110,15 +65,73 @@ func (p *Player) Logic() {
 				p.CurrentRoom.SendMessage("s::" + p.Name + " says: " + string(message))
 				continue
 			}
-			if val, ok := p.CurrentRoom.Exits[mDir]; ok {
-				log.Println(val)
-				if rVal, rOk := p.GMan.Rooms[val]; rOk {
-					rVal.Enter(p.CurrentRoom, p)
-				}
-			}
 		} else {
 			p.CurrentRoom.SendMessage("s::" + p.Name + " says: " + string(message))
 		}
 
+	}
+}
+
+func (p *Player) Move(d string) {
+	var mDir Direction
+	switch d {
+	case "n":
+		fallthrough
+	case "north":
+		mDir = North
+		break
+	case "e":
+		fallthrough
+	case "east":
+		mDir = East
+		break
+	case "s":
+		fallthrough
+	case "south":
+		mDir = South
+		break
+	case "w":
+		fallthrough
+	case "west":
+		mDir = West
+		break
+	case "u":
+		fallthrough
+	case "up":
+		mDir = Up
+		break
+	case "d":
+		fallthrough
+	case "down":
+		mDir = Down
+		break
+	}
+	if val, ok := p.CurrentRoom.Exits[mDir]; ok {
+		log.Println(val)
+		if rVal, rOk := p.GMan.Rooms[val]; rOk {
+			rVal.Enter(p.CurrentRoom, p)
+		}
+	} else {
+		p.SendMessage("You cannot got that way")
+	}
+}
+
+func (p *Player) inventoryAction(i []string) {
+	switch i[0] {
+	case "i", "inventory":
+		p.SendMessage("sys::Not yet implemented")
+		break
+	case "eq", "equip":
+		p.SendMessage("sys::Not yet implemented")
+		break
+	case "uq", "unequip":
+		p.SendMessage("sys::Not yet implemented")
+		break
+	case "p", "pick up":
+		p.SendMessage("sys::Not yet implemented")
+		break
+	case "dr", "drop":
+		p.SendMessage("sys::Not yet implemented")
+		break
 	}
 }

@@ -1,7 +1,10 @@
 package Game
 
 type EngineConfig struct {
-	PathToRooms string
-	Port        int
-	TickRate    float64
+	PathToRooms   string
+	PathToEnemies string
+	PathToItems   string
+	PathToNpcs    string
+	Port          int
+	TickRate      int64
 }

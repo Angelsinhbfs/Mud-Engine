@@ -11,7 +11,7 @@ type GameManager struct {
 
 func (g *GameManager) Update() {
 	for _, u := range g.Updateables {
-		u.Update()
+		go u.Update()
 	}
 }
 
