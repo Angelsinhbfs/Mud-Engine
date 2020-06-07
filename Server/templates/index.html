@@ -2,29 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Mud-Engine</title>
     <script type="text/javascript" src="/static/js/handlers.js"></script>
     <script type="text/javascript">
         init("{{.}}");
     </script>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
 </head>
 <body>
-<table>
-    <tr><td valign="top" width="50%">
-            <p>Click "Open" to create a connection to the server,
-                "Send" to send a message to the server and "Close" to close the connection.
-                You can change the message and send multiple times.
-            <p>
-                <form>
-                    <button id="open">Open</button>
-                    <button id="close">Close</button>
-                    <input id="input" type="text" value="Hello world!">
-                <button id="send">Send</button>
-                </form>
-        </td><td valign="top" width="50%">
-            <div id="output"></div>
-        </td>
-    </tr>
-</table>
+<div class="container">
+    <ul id="output" class="list">
+    </ul>
+    <form>
+    <input id="input" type="text" class="input" value="">
+    <button id="send" class="submit">Send</button>
+    <button id="open" class="open">Open</button>
+    <button id="close" class="close">Close</button>
+    </form>
+</div>
+<div class="instructions">
+    <i><b>Commands</b></i>
+    <br>
+    Just enter text to say something to the room
+    <pre>
+(L)ook [optional: Item/Person]: reads the description of the room/item/person.
+(M)ove [Direction]: attempts to move in the stated direction.
+    (N)orth, (E)ast, (S)outh, (W)est, (U)p, (D)own
+(P)ick up [item name]: attempts to pick up the named item.
+(A)ttack [(E)nemy name]: attacks the named enemy with your equipped weapon
+(I)nventory: lists your inventory
+(W)hisper [Player name] [Message]: attempts to send a message to the player named
+    </pre>
+</div>
 </body>
 </html>

@@ -1,3 +1,4 @@
+// auth stuff https://blog.rapid7.com/2016/07/13/quick-security-wins-in-golang/
 package main
 
 import (
@@ -41,7 +42,7 @@ func logic(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(conn *websocket.Conn) string {
-	err := conn.WriteMessage(websocket.TextMessage, []byte("Please enter your name"))
+	err := conn.WriteMessage(websocket.TextMessage, []byte("sys::Please enter your name"))
 	if err != nil {
 		log.Println("write:", err)
 	}

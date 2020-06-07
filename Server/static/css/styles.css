@@ -1,0 +1,72 @@
+.container {
+    position: absolute;
+    width: 800px;
+    background-color: aliceblue;
+    height: 95%;
+    border: 2px solid black;
+}
+
+.input {
+    width: 746px;
+    height: 5%;
+    position: absolute;
+    background-color: aliceblue;
+    padding: 0;
+    top: 95%;
+    border: 2px solid black;
+}
+ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: scroll;
+    position: relative;
+    width: 800px;
+    height: 95%;
+
+}
+.submit {
+    width: 50px;
+    height: 5%;
+    position: absolute;
+    top: 95%;
+    left: 750px;
+    border: 2px solid black;
+}
+.open {
+    position: absolute;
+    top: 101%;
+}
+.close {
+    position: absolute;
+    top: 101%;
+    left: 50px;
+}
+
+.say {
+    color: green;
+}
+
+.description {
+    color: saddlebrown;
+    font-style: italic;
+}
+
+.system {
+    color: red;
+    font-style: italic;
+}
+
+.whisper {
+    color: lightsteelblue;
+    font-style: italic;
+}
+
+.instructions {
+    position: absolute;
+    height: 250px;
+    width: auto;
+    left: 825px;
+    border: 2px solid black;
+    overflow: scroll;
+}

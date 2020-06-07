@@ -34,8 +34,8 @@ func (p *Player) Logic() {
 			break
 		}
 		f := strings.Split(string(message), "::")
-		var mDir Direction
-		if len(f) > 1 {
+		if len(f) > 0 {
+			var mDir Direction
 			switch strings.ToLower(f[0]) {
 			case "m":
 			case "move":
@@ -71,15 +71,54 @@ func (p *Player) Logic() {
 			case "down":
 				mDir = Down
 				break
+			case "l":
+				fallthrough
+			case "look":
+				p.SendMessage("d::" + p.CurrentRoom.Description)
+				continue
+			case "p":
+				fallthrough
+			case "pick up":
+				p.SendMessage("sys::Not yet implemented")
+				continue
+			case "a":
+				fallthrough
+			case "attack":
+				p.SendMessage("sys::Not yet implemented")
+				continue
+			case "i":
+				fallthrough
+			case "inventory":
+				p.SendMessage("sys::Not yet implemented")
+				continue
+			case "eq":
+				fallthrough
+			case "equip":
+				p.SendMessage("sys::Not yet implemented")
+				continue
+			case "uq":
+				fallthrough
+			case "unequip":
+				p.SendMessage("sys::Not yet implemented")
+				continue
+			case "wh":
+				fallthrough
+			case "whisper":
+				p.SendMessage("sys::Not yet implemented")
+				continue
+			default:
+				p.CurrentRoom.SendMessage("s::" + p.Name + " says: " + string(message))
+				continue
 			}
-		}
-		log.Println("moving " + mDir.String())
-		if val, ok := p.CurrentRoom.Exits[mDir]; ok {
-			log.Println(val)
-			if rVal, rOk := p.GMan.Rooms[val]; rOk {
-				log.Println("entering " + rVal.Name)
-				rVal.Enter(p.CurrentRoom, p)
+			if val, ok := p.CurrentRoom.Exits[mDir]; ok {
+				log.Println(val)
+				if rVal, rOk := p.GMan.Rooms[val]; rOk {
+					rVal.Enter(p.CurrentRoom, p)
+				}
 			}
+		} else {
+			p.CurrentRoom.SendMessage("s::" + p.Name + " says: " + string(message))
 		}
+
 	}
 }
