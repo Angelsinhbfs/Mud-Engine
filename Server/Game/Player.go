@@ -43,23 +43,19 @@ func (p *Player) Logic() {
 			case "n", "north", "e", "east", "s", "south", "w", "west", "u", "up", "d", "down":
 				p.Move(strings.ToLower(f[0]))
 				continue
-			case "l":
-				fallthrough
-			case "look":
-				p.SendMessage("d::" + p.CurrentRoom.Description)
+			case "l", "look":
+				p.SendMessage("d::" + p.CurrentRoom.GetDescription(p.Name))
 				continue
 			case "p", "pick up", "i", "inventory", "eq", "equip", "uq", "unequip", "dr", "drop":
 				p.inventoryAction(f)
-			case "a":
-				fallthrough
-			case "attack":
+			case "a", "attack":
 				p.SendMessage("sys::Not yet implemented")
 				continue
 
-			case "wh":
-				fallthrough
-			case "whisper":
-				p.SendMessage("sys::Not yet implemented")
+			case "wh", "whisper":
+				if op, ok := gMan.Players[f[1]]; ok {
+					op.SendMessage("w::" + p.Name + " whispers: " + string(f[2]))
+				}
 				continue
 			default:
 				p.CurrentRoom.SendMessage("s::" + p.Name + " says: " + string(message))

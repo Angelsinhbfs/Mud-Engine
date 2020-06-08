@@ -22,6 +22,9 @@ window.addEventListener("load", function(evt) {
                 case 'sys': //system message
                     d.classList.add('system');
                     break;
+                case 'w':
+                    d.classList.add('whisper');
+                    break;
             }
             d.textContent = s[1];
         } else {
